@@ -1,0 +1,7 @@
+package com.fullstack.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MovieimageRepository extends JpaRepository<T, ID> {
+
+}

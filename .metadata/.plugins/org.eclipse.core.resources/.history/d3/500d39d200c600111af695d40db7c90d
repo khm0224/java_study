@@ -1,0 +1,25 @@
+package com.fullstack.service;
+
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.entity.Board;
+
+@SpringBootTest
+public class BoardServiceTest {
+	@Test
+	public void newInsertBoard() {
+		BoardService boardService = new BoardServiceImpl(boardRepository);
+		BoardDTO dto = BoardDTO.builder().writerEmail("user99@aaa.com").title("새글제목")
+				.content("새글내용").writerName("USER99").build();
+		Long pk = boardService.register(dto);
+		
+		
+		Optional<Board> result = boardRepository.findById(pk);
+		Board board = result.get();
+		System.out.println(board);
+	
+}

@@ -1,0 +1,16 @@
+package com.fullstack.dto;
+
+import java.time.LocalDateTime;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class ReplyDTO {
+	private Long rno;
+	private String title;
+	private String content;
+	private Long bno;
+	private LocalDateTime regDate, modDate;
+}

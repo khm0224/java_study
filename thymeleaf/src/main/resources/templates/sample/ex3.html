@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1 th:text="${result}"></h1>
+	<h1 th:text="${dto}"></h1>
+	
+	<script th:inline="javascript">
+		// 오류 났다가 뜨는데 이거 오류 아님
+		//const msg = [[${result}]]
+		//const dto = [[${dto}]]
+		
+		//console.log(dto);
+	</script>
+</body>
+</html>

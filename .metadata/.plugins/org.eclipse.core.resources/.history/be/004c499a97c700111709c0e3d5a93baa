@@ -1,0 +1,87 @@
+package com.fullstack.controller;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fullstack.dto.UploadResultDTO;
+
+import lombok.extern.log4j.Log4j2;
+
+@RestController
+@Log4j2
+public class UploadController {
+	@Value("${com.fullstack.upload.path}")
+	private String uploadPath;
+	
+	@PostMapping("/uploadAjax")
+	public ResponseEntity<List<UploadResultDTO>> uploadFile(@RequestParam("uploadFiles") MultipartFile[] uploadFiles) {
+		List<UploadResultDTO> resultDTOList = new ArrayList<>();
+		for(MultipartFile uploadFile : uploadFiles) {
+			log.warn(uploadFile.getContentType()); // 파일의 타입
+			//이미지 파일인지를 검증하는 로직
+			if(uploadFile.getContentType().startsWith("image") == false) {
+				log.warn("이미지 파일이 아님");
+			}
+			
+			String originalName = uploadFile.getOriginalFilename();
+			String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
+			
+			log.info("fileName : " + fileName);
+			
+			String folderPath = makeFolder();
+			
+			log.warn(folderPath);
+			
+			// 업로드한 파일명 변경
+			String uuid = UUID.randomUUID().toString();
+			
+			// 저장시 파일 이름 중간에 "_"를 이용해서 구분
+			String saveName = uploadPath + File.separator + folderPath + File.separator
+					+ uuid + "_" + fileName;
+			
+			// 저장될 파일의 전체 Path 객체를 얻어낸다 / makeFolder 만들고 그 안에 파일 저장함
+			Path savePath = Paths.get(saveName);
+			try {
+				uploadFile.transferTo(savePath);
+				// 파일이 업로드 된 이후 파일의 정보 객체를 생성해서 list에 add
+				resultDTOList.add(new UploadResultDTO(fileName, uuid, folderPath));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			/* 응답할 내용
+			 * 업로드된 파일의 원래 이름
+			 * 파일의 UUID 값
+			 * 업로드된 파일의 저장 경로(이미지 표시를 위한 것)
+			 */
+			return new ResponseEntity<List<UploadResultDTO>>(resultDTOList, HttpStatus.OK);
+		}
+	}
+
+	// 일자별 폴더 만들기
+	private String makeFolder() {
+		String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		String folderPath = str.replace("/", File.separator); // 오늘 일자 기준으로 년 월 일 이렇게 총 3개의 폴더가 생성됨
+		
+		// 루트폴더 하위에 folerPath 설정
+		File uploadPathFolder = new File(uploadPath, folderPath);
+		if(uploadPathFolder.exists() == false) {
+			uploadPathFolder.mkdirs();
+		}
+		return folderPath;
+	}
+}

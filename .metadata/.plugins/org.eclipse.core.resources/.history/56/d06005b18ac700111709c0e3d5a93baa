@@ -1,0 +1,31 @@
+package com.fullstack.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.fullstack.entity.Movie;
+import com.fullstack.entity.Review;
+
+public interface ReviewRepository extends JpaRepository<Review, Long> {
+	// 특정 영화에 대한 리뷰 정보를 가져오는 메서드 정의
+	
+	/*
+	 * EntityGraph : 특정 엔티티의 특정한 속성을 같이 로딩하는 어노테이션
+	 * Lazy 로 설정된 Fetch를 EAGER 로 되돌리는 역할을 함
+	 * 
+	 * 속성으로는 attributePaths : 로딩 설정을 변경하고 싶은 속성의 이름을 배열로 명시
+	 * type : @EntityGraph 를 어떤 방식으로 적용할 것인지 결정
+	 * FETCH : Eager or Lazy
+	 * Load : 위 attributPath 에 명시한 속성을 Eager 로 처리하고, 나머지는 엔티티의
+	 * 명시된 형태 또는 기본으로 처리하도록 명기함
+	 */
+	@EntityGraph(attributePaths = {"member"}, type = EntityGraphType.FETCH)
+	List<Review> findByMovie(Movie movie);
+	
+	// 특정 회원이 작성한 Review 삭제 처리
+	// 회원이 삭제 되는 경우, 그 회원이 작성한 리뷰도 삭제 되어야 한다
+	
+}

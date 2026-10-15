@@ -1,0 +1,25 @@
+package com.fullstack.service;
+
+import org.springframework.stereotype.Service;
+
+import com.fullstack.entity.Board;
+import com.fullstack.entity.BoardDTO;
+import com.fullstack.repository.BoardRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Service
+@RequiredArgsConstructor
+@Log4j2
+public class BoardServiceImpl implements BoardService {
+	private final BoardRepository boardRepository;
+	
+	public Long register(BoardDTO dto) {
+		// DTO --> Entity 변환
+		Board board = dtoToEntity(dto);
+		boardRepository.save(board);
+		
+		return board.getBno();
+	}
+}

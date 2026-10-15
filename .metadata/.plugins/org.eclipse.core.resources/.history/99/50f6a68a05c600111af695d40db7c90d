@@ -1,0 +1,32 @@
+package com.fullstack.service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.dto.PageResultDTO;
+
+@SpringBootTest
+public class BoardServiceTest {
+	@Autowired
+	private BoardService boardService;
+	
+	//@Test
+	public void testList() {
+		PageRequestDTO pageRequestDTO = new PageRequestDTO();
+		
+		PageResultDTO<BoardDTO, Object[]> result = boardService.getList(pageRequestDTO);
+		
+		for(BoardDTO boardDTO : result.getDtoList()) {
+			System.out.println(boardDTO);
+		}
+	}
+	
+	//@Test
+	public void get() {
+		BoardDTO dto = boardService.get(100L);
+		System.out.println(dto);
+	}
+}

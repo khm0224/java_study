@@ -1,0 +1,18 @@
+package com.fullstack.repository;
+
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public interface MemberRepositoryTests{
+	@Autowired
+	private MemberRepository memberRepository;
+	
+	@Test
+	public void insertDummies() {
+		IntStream.rangeClosed(1, 100).forEach(i ->{
+			
+		});
+	}
+}

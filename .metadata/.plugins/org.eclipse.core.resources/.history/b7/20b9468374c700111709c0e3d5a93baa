@@ -1,0 +1,22 @@
+package com.fullstack.repository;
+
+import java.util.stream.IntStream;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import com.fullstack.entity.Review;
+
+@SpringBootTest
+public class ReviewRepositoryTests {
+	@Autowired
+	private ReviewRepository reviewRepository;
+	
+	@Test
+	public void insertDummies() {
+		IntStream.rangeClosed(1, 200).forEach(i -> {
+			Long mno = (long)(Math.random() * 100) + 1;
+			Review review;
+		});
+	}
+}

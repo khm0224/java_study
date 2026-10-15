@@ -1,0 +1,14 @@
+package com.fullstack.repository;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public interface MemberRepositoryTests{
+	@Autowired
+	private MemberRepository memberRepository;
+	
+	@Test
+	pubic void insertDummies() {
+		
+	}
+}

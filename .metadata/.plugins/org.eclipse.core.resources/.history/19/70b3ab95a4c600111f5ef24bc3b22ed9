@@ -1,0 +1,48 @@
+package com.fullstack.repository;
+
+import java.util.List;
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.fullstack.dto.ReplyDTO;
+import com.fullstack.entity.Board;
+import com.fullstack.entity.Reply;
+import com.fullstack.service.ReplyService;
+
+@SpringBootTest
+public class ReplyRepositoryTests {
+	@Autowired
+	private ReplyRepository replyRepository;
+
+	//@Test
+	public void insertReply() {
+		IntStream.rangeClosed(1, 100).forEach(i -> {
+			// 랜덤한 bno를 생성해서 중복과 댓글이 없는 게시글 생성
+			long bno = (long)(Math.random() * 100 + 1);
+			
+			Board board = Board.builder().bno(bno).build();
+			
+			Reply reply = Reply.builder().text("Reply.."+i).board(board)
+					.replyer("guest").build();
+			
+			replyRepository.save(reply);
+		});
+	}
+	
+	//@Test
+	public void testListByBoard() {
+		List<Reply> replyList = replyRepository.getRepliesByBoardOrderByRno(
+				Board.builder().bno(95L).build());
+		replyList.forEach(reply -> System.out.println(reply));
+	}
+	
+	@Autowired
+	private ReplyService serivce;
+	public void testGetList() {
+		Long bno = 100L;
+		List<ReplyDTO> replyDtoList = serivce.getList(bno);
+		replyDtoList.forEach(t -> System.out.println(t));
+	}
+}

@@ -1,0 +1,40 @@
+package com.fullstack.service;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.fullstack.dto.MovieDTO;
+import com.fullstack.entity.Movie;
+import com.fullstack.entity.MovieImage;
+import com.fullstack.repository.MovieRepository;
+import com.fullstack.repository.MovieimageRepository;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Service
+@Log4j2
+@RequiredArgsConstructor
+public class MovieServiceImpl implements MovieService{
+	private final MovieRepository movieRepository;
+	private final MovieimageRepository movieimageRepository;
+	
+	@Override
+	@Transactional
+	public Long register(MovieDTO movieDTO) {
+		Map<String, Object> entityMap = dtoToEntity(movieDTO);
+		
+		Movie movie = (Movie)entityMap.get("movie");
+		List<MovieImage> movieImageList = (List<MovieImage>)entityMap.get("imgList");
+		
+		movieRepository.save(movie);
+		movieImageList.forEach(movieImage -> {
+			movieimageRepository.save(movieImage);
+		});
+		
+		return movie.getMno();
+	}
+}

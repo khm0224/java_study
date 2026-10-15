@@ -1,0 +1,58 @@
+package com.fullstack.dto;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import lombok.Data;
+
+@Data
+public class PageResultDTO<DTO, EN> {
+	private List<DTO> dtoList; // Viewer 로 넘겨질 DTO List
+	
+	// 총 페이지 번호
+	private int totalPage;
+	
+	// 현재 페이지 번호
+	private int page;
+	
+	// 목록의 사이즈
+	private int size;
+	
+	// 시작페이지 번호, 끝 페이지 번호
+	private int start, end;
+	
+	// 이전, 다음
+	private boolean prev, next;
+	
+	// 페이지 번호 목록..1,2,3,4,5,...10
+	private List<Integer> pageList;
+	
+	public PageResultDTO(Page<EN> result, Function<EN, DTO> fn) {
+		dtoList = result.stream().map(fn).collect(Collectors.toList());
+		totalPage = result.getTotalPages();
+		makePageList(result.getPageable());
+	}
+	
+	// 페이지 리스트 생성 메서드 정의
+	private void makePageList(Pageable pageable) {
+		this.page = pageable.getPageNumber() + 1;
+		//1페이지 요청 -> getpageNumber = 0 / 0 + 1을 해서 1페이지로 설정되게 함
+		this.size = pageable.getPageSize(); // 10
+		
+		// 총 목록 301개 존재, 총 페이지 31페이지
+		
+		// 가상의 끝 페이지 설정
+		int tempEnd = (int)(Math.ceil(page/10.0)) * 10; // 10
+		
+		start = tempEnd - 9; // 1
+		prev = start > 1; // false
+		end = totalPage > tempEnd ? tempEnd : totalPage; // 31 > 10 .. 10
+		next = totalPage > tempEnd; // 31 > 10 .. true
+		
+		pageList = IntStream.rangeClosed(start, end).boxed().collect(Collectors.toList());
+	}
+}

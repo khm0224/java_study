@@ -1,0 +1,80 @@
+package com.fullstack.controller;
+
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestParam;
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.service.BoardService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Controller
+@RequestMapping("/board/")
+@Log4j2
+@RequiredArgsConstructor
+public class BoardController {
+	private final BoardService boardService;
+	
+	@GetMapping("/")
+	public String index() {
+		return "redirect:/board/list";
+	}
+	
+	@GetMapping("/register")
+	public void register() {
+		
+	}
+	
+	@PostMapping("/register")
+	public String postRegister(BoardDTO dto, RedirectAttributes redirectAttributes) {
+		log.info("dto------" + dto);
+		Long bno = boardService.register(dto);
+		
+		log.info("입력된 글자 bno ---> " + bno);
+		redirectAttributes.addFlashAttribute("msg",bno);
+		return "redirect:/board/list";
+	}
+	
+	@GetMapping({"/read", "/modify"})
+	public void read(@ModelAttribute("requestDTO") PageRequestDTO pageRequestDTO, 
+			@RequestParam("bno") Long bno, Model model) {
+		log.info("요청 bno ---->" + bno);
+		BoardDTO boardDTO = boardService.get(bno);
+		model.addAttribute("dto", boardDTO);
+	}
+	
+	@GetMapping("/list")
+	public void list(PageRequestDTO pageRequestDTO, Model model) {
+		log.info("List 페이지 호출됨.." + pageRequestDTO);
+		
+		// 모델에 글 목록을 첨부하여 뷰어로 보냄
+		model.addAttribute("result", boardService.getList(pageRequestDTO));
+	}
+	
+	// 수정 처리 요청 메서드 정의
+	@PostMapping("/modify")
+	public String modify(BoardDTO boardDTO, @ModelAttribute("requestDTO") PageRequestDTO requestDTO,
+			RedirectAttributes ra) {
+		boardService.modify(boardDTO);
+		ra.addAttribute("page", requestDTO.getPage());
+		ra.addAttribute("bno", boardDTO.getBno());
+		ra.addAttribute("word", requestDTO.getKeyword());
+		ra.addAttribute("keyword", requestDTO.getKeyword());
+		return "redirect:/board/read";
+	}
+	
+	// 삭제 요청 처리 메서드 정의
+	@PostMapping("/remove")
+	public String remove(@RequestParam("bno") Long bno, RedirectAttributes ra) {
+		boardService.remove(bno);
+		ra.addFlashAttribute("msg",bno);
+		return "redirect:/board/list";
+	}
+}

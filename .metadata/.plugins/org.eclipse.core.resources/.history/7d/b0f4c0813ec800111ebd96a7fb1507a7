@@ -1,0 +1,21 @@
+package com.fullstack.dto;
+
+import java.util.Arrays;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class MovieDTO {
+	private Long mno;
+	private String title;
+	
+	@Builder.Default
+	private List<MovieImageDTO> imageDTOList = new ArrayList();
+}

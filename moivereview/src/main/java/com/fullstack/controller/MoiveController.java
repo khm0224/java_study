@@ -1,0 +1,52 @@
+package com.fullstack.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.fullstack.dto.MovieDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.service.MovieService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Controller
+@RequestMapping("/movie")
+@Log4j2
+@RequiredArgsConstructor
+public class MoiveController {
+	private final MovieService movieService;
+	// register 폼 띄우도록 메서드 정의
+	@GetMapping("/register")
+	public void register() {
+		
+	}
+	
+	@PostMapping("/register")
+	public String register(MovieDTO movieDTO, RedirectAttributes redirectAttributes) {
+		log.info("MovieDTO ---------> " + movieDTO);
+		
+		Long mno = movieService.register(movieDTO);
+		redirectAttributes.addFlashAttribute("msg", mno);
+		
+		return "redirect:/movie/list";
+	}
+	
+	@GetMapping("/list")
+	public void list(PageRequestDTO pageRequestDTO, Model model) {
+		model.addAttribute("result", movieService.getList(pageRequestDTO));
+	}
+	
+	@GetMapping({"/read", "/modify"})
+	public void read(@RequestParam("mno") Long mno, 
+			@ModelAttribute("requestDTO") PageRequestDTO pageRequestDTO, Model model) {
+		MovieDTO movieDTO = movieService.getMovie(mno);
+		model.addAttribute("dto", movieDTO);
+	}
+}

@@ -1,0 +1,5 @@
+package com.fullstack.repository;
+
+public class ReplyRepositoryTests {
+
+}

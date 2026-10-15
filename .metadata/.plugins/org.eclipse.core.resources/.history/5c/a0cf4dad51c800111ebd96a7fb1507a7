@@ -1,0 +1,10 @@
+package com.fullstack.service;
+
+import com.fullstack.dto.MovieDTO;
+
+public class MovieServiceImpl implements MovieService{
+	@Override
+	public Long register(MovieDTO movieDTO) {
+		
+	}
+}

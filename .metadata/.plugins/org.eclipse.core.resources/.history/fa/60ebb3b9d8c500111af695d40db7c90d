@@ -1,0 +1,18 @@
+package com.fullstack.entity;
+
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+/*
+ * 회원정보에는 이메일, 이름, 암호, 정도만 넣는다
+ */
+
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Member {
+
+}

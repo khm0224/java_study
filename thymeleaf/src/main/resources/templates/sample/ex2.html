@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<ul>
+		<li th:each="dto,state:${list}">
+			<span th:if="${dto.sno % 5 == 0}" th:text="${'---------' + dto.sno}"></span>
+			<span th:unless="${dto.sno % 5 == 0}" th:text="${dto.first}"></span>
+			[[${state.index }]] --- [[${dto }]]
+		</li>
+	</ul>
+	
+	<th:block th:each="dto:${list}">
+		<li th:text="${dto.sno % 5 == 0}?${dto.sno}:${dto.first}"/>
+	</th:block>
+</body>
+</html>

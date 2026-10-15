@@ -1,0 +1,33 @@
+package com.fullstack.entity;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+// 컨트롤러에서 페이지 정보를 받는 DTO 정의
+@Builder
+@AllArgsConstructor
+@Data
+public class PageRequestDTO {
+	// 페이지 여청을 받아서 해당 페이지의 목록들만 되돌려 줘야 한다
+	private int page; // 페이지 번호
+	private int size; // 글 목록 수
+	private String type;
+	private String keyword;
+	
+	// 요청이 없는 경우에는 기본 페이지를 1페이지(가장 최신글 표시)로 설정
+	// 글 목록 수는 10개로
+	public PageRequestDTO() {
+		this.page = 1;
+		this.size = 10;
+	}
+	
+	// 페이징 처리된 Pageable 을 리턴하는 메서드 정의
+	public Pageable getPageable(Sort sort) {
+		return PageRequest.of(page-1, size, sort);
+	}
+}

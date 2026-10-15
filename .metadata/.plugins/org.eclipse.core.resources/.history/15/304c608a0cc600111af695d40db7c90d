@@ -1,0 +1,28 @@
+package com.fullstack.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.service.BoardService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Controller
+@RequestMapping("/board/")
+@Log4j2
+@RequiredArgsConstructor
+public class BoardController {
+	private final BoardService boardService;
+	
+	@GetMapping("/list")
+	public void list(PageRequestDTO pageRequestDTO, Model model) {
+		log.info("List 페이지 호출됨.." + pageRequestDTO);
+		
+		// 모델에 글 목록을 첨부하여 뷰어로 보냄
+		model.addAttribute("result", boardService.getList(pageRequestDTO));
+	}
+}

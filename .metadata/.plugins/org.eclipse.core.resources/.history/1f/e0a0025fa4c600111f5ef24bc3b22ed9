@@ -1,0 +1,46 @@
+package com.fullstack.service;
+
+import java.util.List;
+import com.fullstack.dto.ReplyDTO;
+import com.fullstack.entity.Board;
+import com.fullstack.entity.Reply;
+
+/*
+ * 댓긋 등록록하는 기능
+ * 특정 게시물의 댓글 리스트를 가져오는 기능
+ * 댓글을 수정 하고 삭제 하는 기능
+ * Reply -> ReplyDTO 변경하는 기능
+ * ReplyDTO -> Reply로 변경하는 기능
+ * 
+ * 위 기능을 선언 해야한다
+ */
+public interface ReplyService {
+	Long register(ReplyDTO replyDTO);
+	List<ReplyDTO> getList(Long bno);
+	void modify(ReplyDTO replyDTO); // 댓글 수정
+	void remove(Long rno); // 댓글 삭제
+	
+	default Reply dtoToEntity(ReplyDTO dto) {
+		Board board = Board.builder().bno(dto.getBno()).build();
+		Reply reply = Reply.builder()
+	            .rno(dto.getRno())
+	            .text(dto.getTitle()) 
+	            .replyer(dto.getContent())
+	            .board(board)
+	            .build();
+	            
+	    return reply;
+	}
+
+	default ReplyDTO entityToDTO(Reply reply) {
+		ReplyDTO dto = ReplyDTO.builder()
+				.rno(reply.getRno())
+	            .title(reply.getText())
+	            .content(reply.getReplyer())
+	            .bno(reply.getBoard().getBno())
+	            .regDate(reply.getRegDate())
+	            .modDate(reply.getModDate())
+	            .build();
+		return dto;
+	}
+}

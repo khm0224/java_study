@@ -1,0 +1,14 @@
+package com.fullstack.service;
+
+import java.util.Map;
+import com.fullstack.dto.MovieDTO;
+import jakarta.transaction.Transactional;
+
+public class MovieServiceImpl implements MovieService{
+	@Override
+	@Transactional
+	public Long register(MovieDTO movieDTO) {
+		Map<String, Object> entityMap = dtoToEntity(movieDTO);
+		
+	}
+}

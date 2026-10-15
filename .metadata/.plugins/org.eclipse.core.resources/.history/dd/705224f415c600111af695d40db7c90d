@@ -1,0 +1,91 @@
+package com.fullstack.service;
+
+import java.util.function.Function;
+
+import org.springframework.stereotype.Service;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.dto.PageResultDTO;
+import com.fullstack.entity.Board;
+import com.fullstack.entity.Member;
+import com.fullstack.repository.BoardRepository;
+import com.fullstack.repository.ReplyRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+@Service
+@RequiredArgsConstructor
+@Log4j2
+public class BoardServiceImpl implements BoardService {
+	private final BoardRepository boardRepository;
+	private final ReplyRepository replyRepository;
+	
+	// 페이지에 해당하는 글 목록을 담은 내용을 PageResultDTO에 담아서 념겨야 한다
+	@Override
+	public PageResultDTO<BoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO) {
+		// PageResultDTO의 생성자에 넘겨줄 Function 객체 생성
+		// Entity를 DTO로 변경하는 역할을 하므로 이를 구현한다
+		Function<Object[], BoardDTO> fn = (t ->
+			// [Board(bno=92, title=Title..92, content=Content..92), 0번 인덱스
+			// Member(email=user92@aaa.com, password=1111, name=USER92), 1번 인덱스
+			// 0] 2번 인덱스
+			entityToDTO((Board)t[0], (Member)t[1], (Long)t[2])
+		);
+		// 변환할 Function 객체를 만들었으니 PageResult 객체의 성성자에 넘겨주면,
+		// 해당 페이지를 리턴하도록 정의되었음
+		Pageable pageable = pageRequestDTO.getPageable(Sort.by("bno").descending());
+		
+		Page<Object[]> result = boardRepository.getBoardWithReplyCount(pageable);
+		
+		return new PageResultDTO<>(result, fn);
+	}
+	
+	@Override
+	public Long register(BoardDTO dto) {
+		// DTO --> Entity 변환
+		Board board = dtoToEntity(dto);
+		boardRepository.save(board);
+		
+		return board.getBno();
+	}
+	
+	// 요청 글번호에 해당하는 글 내용 리턴 메서드 정의
+	@Override
+	public BoardDTO get(Long bno) {
+		Object result = boardRepository.getBoardByBno(bno);
+		Object[] arr = (Object[])result;
+		
+		return entityToDTO((Board)arr[0], (Member)arr[1], (Long)arr[2]);
+	}
+	
+	@Override
+	public void removeWithRepies(Long bno) {
+		replyRepository.deleteByBno(bno);
+		boardRepository.deleteById(bno);
+	}
+	
+	@Override
+	public void mdifiy(BoardDTO boardDTO) {
+		Board board = boardRepository.findById(boardDTO.getBno()).get();
+		board.changeTitle(boardDTO.getTitle());
+		board.changeContent(boardDTO.getContent());
+		
+		boardRepository.save(board);
+	}
+
+	@Override
+	public void modify(BoardDTO boardDTO) {
+		
+	}
+
+	@Override
+	public void remove(Long bno) {
+		
+	}
+}

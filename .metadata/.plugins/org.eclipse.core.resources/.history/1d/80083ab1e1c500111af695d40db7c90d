@@ -1,0 +1,21 @@
+package com.fullstack.repository;
+
+import java.util.stream.IntStream;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class ReplyRepositoryTests {
+	@Autowired
+	private ReplyRepository replyRepository;
+
+	@Test
+	public void insertReply() {
+		IntStream.rangeClosed(1, 100).forEach(i -> {
+			// 랜덤한 bno를 생성해서 중복과 댓글이 없는 게시글 생성
+			long bno = (long)Math.random() * 100 + 1;
+			
+		});
+	}
+}

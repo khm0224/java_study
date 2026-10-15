@@ -1,0 +1,49 @@
+package com.fullstack.service;
+
+import org.springframework.stereotype.Service;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.dto.PageResultDTO;
+import com.fullstack.entity.Board;
+import com.fullstack.entity.Member;
+
+@Service
+public interface BoardService {
+	// 등록 메서드 선언
+	Long register(BoardDTO dto);
+
+	// 목록 처리에 필요한 메서드 선언
+	PageResultDTO<BoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
+
+	BoardDTO get(Long bno);
+
+	// 수정 기능 처리 메서드 선언
+	void mdifiy(BoardDTO boardDTO);
+
+	// 삭제 기능 처리 메서드 선언
+	void removeWithRepies(Long bno);
+
+	// 모디파이 메서드 선언
+	void modify(BoardDTO boardDTO);
+
+	// 삭제 메서드 선언
+	void remove(Long bno);
+
+	default Board dtoToEntity(BoardDTO dto) {
+		Member member = Member.builder().email(dto.getWriterEmail()).build();
+		Board board = Board.builder().bno(dto.getBno()).title(dto.getTitle()).content(dto.getContent()).writer(member)
+				.build();
+		return board;
+	}
+
+	default BoardDTO entityToDTO(Board board, Member member, Long replyCount) {
+		BoardDTO boardDTO = BoardDTO.builder().bno(board.getBno()).title(board.getTitle()).content(board.getContent())
+				.regDate(board.getRegDate()).modDate(board.getModDate()).writerEmail(member.getEmail())
+				.writerName(member.getName()).replyCount(replyCount.intValue()) // int로 처리하도록
+				.build();
+
+		return boardDTO;
+
+	}
+}

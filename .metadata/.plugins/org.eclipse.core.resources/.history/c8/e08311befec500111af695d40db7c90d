@@ -1,0 +1,29 @@
+package com.fullstack.service;
+
+import org.springframework.stereotype.Service;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.entity.Board;
+import com.fullstack.entity.Member;
+import com.fullstack.repository.BoardRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Service
+@RequiredArgsConstructor
+@Log4j2
+public class BoardServiceImpl implements BoardService {
+	private final BoardRepository boardRepository;
+	
+	// 페이지에 해당하는 글 목록을 담은 내용을 PageResultDTO에 담아서 념겨야 한다
+	
+	
+	public Long register(BoardDTO dto) {
+		// DTO --> Entity 변환
+		Board board = dtoToEntity(dto);
+		boardRepository.save(board);
+		
+		return board.getBno();
+	}
+}

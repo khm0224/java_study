@@ -1,0 +1,37 @@
+package com.fullstack.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.fullstack.dto.MovieDTO;
+import com.fullstack.dto.MovieImageDTO;
+import com.fullstack.entity.Movie;
+import com.fullstack.entity.MovieImage;
+
+public interface MovieService {
+	Long register(MovieDTO movieDTO);
+	
+	// dto -> entity 변환
+	default Map<String, Object> dtoToEntity(MovieDTO movieDTO){
+		Map<String, Object> entityMap = new HashMap<>();
+		
+		Movie movie = Movie.builder().mno(movieDTO.getMno())
+				.title(movieDTO.getTitle()).build();
+		entityMap.put("moive", movie);
+		
+		// 이미지 관련 정보 저장
+		List<MovieImageDTO> imageDtoList = movieDTO.getImageDTOList();
+				
+		if(imageDtoList != null && imageDtoList.size() > 0) {
+			List<MovieImageDTO> movieImageList = imageDtoList.stream().map(movieImageDTO -> {
+				MovieImage movieImage = MovieImage.builder()
+						.path(movieImageDTO.getPath())
+						.imgName(movieImageDTO.getImgName())
+						.uuid(movieImageDTO.getUuid()).build();
+			});
+		}
+		
+		return entityMap;
+	}
+}

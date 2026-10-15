@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<typeInfoHistroy>
+    <typeInfo handle="=guestbook/src\/main\/java=/gradle_scope=/main=/=/gradle_used_by_scope=/main,test=/&lt;com.fullstack.service{GuestbookService.java[GuestbookService" modifiers="513" timestamp="1791438234184"/>
+    <typeInfo handle="=dbtest/C:\/Users\/hmv23\/.gradle\/caches\/modules-2\/files-2.1\/org.springframework.data\/spring-data-jpa\/4.1.1\/44e75d6aaa629c40e03277eddacb2ed5ddd10955\/spring-data-jpa-4.1.1.jar=/gradle_used_by_scope=/main,test=/=/org.eclipse.jst.component.dependency=/\/WEB-INF\/lib=/&lt;org.springframework.data.jpa.repository(JpaRepository.class[JpaRepository" modifiers="1537" timestamp="1791251570508"/>
+</typeInfoHistroy>

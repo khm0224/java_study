@@ -1,0 +1,16 @@
+package com.fullstack.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import com.fullstack.entity.Movie;
+
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+	@Query("select m, avg(coalesce(r.grade, 0)), count(distinct r) from Movie m"
+			+ " Left outer join Review r on r.movie = m"
+			+ " group by m")
+	// coalesce(r.grade, 0) -> r.grade 가 null이면 0으로 대체해라 (리뷰 테이블을 보면 영화 몇개는 리뷰 평점 자체가 없어서 그 영화의 평점은 null 상태임)
+	Page<Object[]> getListPage(PageRequest pageRequest);
+}

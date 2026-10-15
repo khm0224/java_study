@@ -1,0 +1,10 @@
+package com.fullstack.service;
+
+import org.springframework.stereotype.Service;
+import com.fullstack.entity.BoardDTO;
+
+@Service
+public interface BoardService {
+	// 등록 메서드 선언
+	Long register(BoardDTO dto);
+}

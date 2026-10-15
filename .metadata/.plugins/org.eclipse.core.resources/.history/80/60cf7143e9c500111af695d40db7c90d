@@ -1,0 +1,20 @@
+package com.fullstack.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import com.fullstack.entity.Board;
+
+public interface BoardRepository extends JpaRepository<Board, Long>{
+	// 작성된 글과 작성자를 가져오는 쿼리 작성..
+	// board 엔티티에서 @ManyToOne(fetch = FetchType.LAZY) 를 했기 때문에
+	// 이런 식으로 join을 따로 날려야함
+	@Query("select b, w from Board b left join b.writer w where b.bno = :bno")
+	Object getBoardWithWriter(@Param("bno") Long bno);
+	
+	// 작성된 글과 이에 달린 댓글을 가져오는 쿼리문
+	// Board 입장에서는 Reply가 비참조 관계이므로, 공통 컬럼을 조인 시킬 때는 On 키워드를
+	// 사용해서 조인을 시켜야 한다
+	@Query("select b, r from Board b left join Reply r on r.board = b.bno where bno =:bno")
+	Object getBoardWithReply(@Param("bno") Long bno);
+}

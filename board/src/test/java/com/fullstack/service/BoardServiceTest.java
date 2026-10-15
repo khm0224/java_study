@@ -1,0 +1,50 @@
+package com.fullstack.service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fullstack.dto.BoardDTO;
+import com.fullstack.dto.PageRequestDTO;
+import com.fullstack.dto.PageResultDTO;
+
+@SpringBootTest
+public class BoardServiceTest {
+	@Autowired
+	private BoardService boardService;
+	
+	//@Test
+	public void testList() {
+		PageRequestDTO pageRequestDTO = new PageRequestDTO();
+		
+		PageResultDTO<BoardDTO, Object[]> result = boardService.getList(pageRequestDTO);
+		
+		for(BoardDTO boardDTO : result.getDtoList()) {
+			System.out.println(boardDTO);
+		}
+	}
+	
+	//@Test
+	public void get() {
+		BoardDTO dto = boardService.get(100L);
+		System.out.println(dto);
+	}
+	
+	//@Test
+	@Transactional // 여러 개의 데이터베이스 작업(등록, 수정, 삭제 등)을 하나의 "세트"로 묶어서 실행
+	// (하지만 다 끝나면 롤백을 하기 때문에 db에 반영을 안함)
+	@Commit // 무조건 적용해라, 그래서 이거 두 개 다 있으면 적용됨
+	public void deleteBoard() {
+		boardService.removeWithRepies(1L);
+	}
+	
+	@Test
+	public void modify() {
+		BoardDTO dto = boardService.get(102L);
+		dto.setTitle("수정됨 제목");
+		dto.setContent("수정됨 내용");
+		boardService.mdifiy(dto);
+	}
+}

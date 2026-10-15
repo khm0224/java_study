@@ -1,0 +1,35 @@
+package com.fullstack.repository;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import com.fullstack.entity.Board;
+
+public interface BoardRepository extends JpaRepository<Board, Long>{
+	// 작성된 글과 작성자를 가져오는 쿼리 작성..
+	// board 엔티티에서 @ManyToOne(fetch = FetchType.LAZY) 를 했기 때문에
+	// 이런 식으로 join을 따로 날려야함
+	@Query("select b, w from Board b left join b.writer w where b.bno = :bno")
+	Object getBoardWithWriter(@Param("bno") Long bno);
+	
+	// 작성된 글과 이에 달린 댓글을 가져오는 쿼리문
+	// Board 입장에서는 Reply가 비참조 관계이므로, 공통 컬럼을 조인 시킬 때는 On 키워드를
+	// 사용해서 조인을 시켜야 한다
+	@Query("select b, r from Board b left join Reply r on r.board = b where b.bno = :bno")
+	List<Object[]> getBoardWithReply(@Param("bno") Long bno);
+	
+	// list 페이지에서 사용될 요청된 페이지에 따른 목록을 리턴하도록 하는 쿼리가 필요하다
+	@Query(value = "select b, w, count(r) from Board b "
+            + "left join b.writer w "
+            + "left join Reply r on r.board = b "
+            + "group by b, w",
+            countQuery = "select count(b) from Board b")
+	Page<Object[]> getBoardWithReplyCount(Pageable pageable);
+	
+	@Query("select b, w from Board b left join b.writer w where b.bno = :bno")
+	Object getBoardSerivceTest(@Param("bno") Long bno);
+}
